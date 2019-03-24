@@ -1,19 +1,4 @@
-/***************************************************************************
-  This is a library for the BME280 humidity, temperature & pressure sensor
 
-  Designed specifically to work with the Adafruit BME280 Breakout
-  ----> http://www.adafruit.com/products/2650
-
-  These sensors use I2C or SPI to communicate, 2 or 4 pins are required
-  to interface. The device's I2C address is either 0x76 or 0x77.
-
-  Adafruit invests time and resources providing this open source code,
-  please support Adafruit andopen-source hardware by purchasing products
-  from Adafruit!
-
-  Written by Limor Fried & Kevin Townsend for Adafruit Industries.
-  BSD license, all text above must be included in any redistribution
- ***************************************************************************/
 #include <SoftwareSerial.h> 
 #include <Wire.h>
 #include <SPI.h>
@@ -38,12 +23,10 @@ void setup() {
     pinMode(LED_BUILTIN, OUTPUT); 
     Serial.begin(115200);
     mySerial.begin(9600); 
-    Serial.println(F("BME280 test"));
+    Serial.println(F("Sensing Start"));
 
     bool status;
     
-    // default settings
-    // (you can also pass in a Wire library object like &Wire2)
     status = bme.begin();  
     if (!status) {
         Serial.println("Could not find a valid BME280 sensor, check wiring!");
@@ -86,14 +69,12 @@ void loop() {
     String jsondata = "";
     StaticJsonBuffer<200> jsonBuffer;
     JsonObject& root = jsonBuffer.createObject();
-    root["temp"] = bme.readTemperature();
-    root["humid"] = bme.readHumidity();
+    root["temp"] = int(bme.readTemperature());
+    root["humid"] = int(bme.readHumidity());
     root["PM2.5"] = PM2_5;
     root["PM10.0"] = PM10;
 
     root.printTo(jsondata);
     Serial.println(jsondata);
   } 
-    delay(1000);
 }
-
